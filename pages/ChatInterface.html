@@ -342,25 +342,41 @@
             inputField.value = '';
             autoResizeTextarea();
 
-            // AI trả lời
-            setTimeout(() => {
-            const botMsg = document.createElement('div');
-            botMsg.className = 'message';
-            botMsg.innerHTML = `
-                <div class="avatar ai-avatar">
-                <img src="../assets/images/img_cpu.svg" width="28" height="28" alt="Bot">
-                </div>
-                <div class="message-content">
-                <div class="message-header">
-                    <div class="sender-name">EcommerceBot</div>
-                    <div class="message-time">${getTime()}</div>
-                </div>
-                <div class="message-bubble ai-message-bubble">Answer</div>
-                </div>
-            `;
-            chatMessages.appendChild(botMsg);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 500);
+            // reply
+            try {
+                const response = await fetch('http://localhost:5000/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: text })
+                });
+
+                const data = await response.json();
+
+                // reply
+                const botMsg = document.createElement('div');
+                botMsg.className = 'message';
+                botMsg.innerHTML = `
+                    <div class="avatar ai-avatar">
+                        <img src="../assets/images/img_cpu.svg" width="28" height="28" alt="Bot">
+                    </div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <div class="sender-name">EcommerceBot</div>
+                            <div class="message-time">${getTime()}</div>
+                        </div>
+                        <div class="message-bubble ai-message-bubble">
+                            ${escapeHtml(data.reply)}
+                        </div>
+                    </div>
+                `;
+                chatMessages.appendChild(botMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
         
         function getTime() {
