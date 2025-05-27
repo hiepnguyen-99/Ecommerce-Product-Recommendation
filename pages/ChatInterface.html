@@ -317,12 +317,12 @@
             }
         });
         
-        function sendMessage() {
+        async function sendMessage() {
             document.querySelector('.empty-state')?.remove();
             const text = inputField.value.trim();
             if (!text) return;
 
-            // 1. Tạo message của user
+            // message của user
             const userMsg = document.createElement('div');
             userMsg.className = 'message';
             userMsg.innerHTML = `
@@ -338,11 +338,11 @@
             chatMessages.appendChild(userMsg);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // 2. Reset input
+            // reset input
             inputField.value = '';
             autoResizeTextarea();
 
-            // 3. AI trả lời
+            // AI trả lời
             setTimeout(() => {
             const botMsg = document.createElement('div');
             botMsg.className = 'message';
