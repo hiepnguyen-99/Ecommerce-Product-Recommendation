@@ -33,6 +33,7 @@ retriever.add_documents(documents)
 def chat():
     try:    
         user_message = request.json.get('message', '')
+        translate
         print(f"user: {user_message}")
 
         relevant_docs = retriever.search(user_message)
@@ -40,6 +41,7 @@ def chat():
         print(f"[Relevant docs]: {relevant_docs}")
 
         answer = generator.generate_answer(user_message, context)
+        translate
         print(f"[Generated answer]: {answer}")
 
         return jsonify({
