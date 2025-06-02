@@ -4,3 +4,4 @@ node_modules
 package-lock.json
 ebotenv/
 model/__pycache__/
+model/bart-ecom-qa/
