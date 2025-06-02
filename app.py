@@ -4,48 +4,42 @@ from model.retriever import Retriever
 from model.generator import Generator
 import json
 import traceback
+from googletrans import Translator
 
 app = Flask(__name__)
 CORS(app)
 
 retriever = Retriever()
 generator = Generator()
+translator = Translator()
 
-# load sản phẩm
-datas = []
-with open('data/val-qar.jsonl', 'r', encoding='utf-8') as f:
-    for i, line in enumerate(f):
-        if i >= 2:
-            break
-        data = json.loads(line.strip())
-        datas.append(data)
+# load data
+with open('data/val.json', 'r', encoding='utf-8') as f:
+    datas = json.load(f)
 # tạo documents cho retriever
 documents = []
 for entry in datas:
-    for snippet in entry.get("review_snippets", []):
-        documents.append(snippet)
-    for ans in entry.get("answers", []):
-        documents.append(ans.get("answerText", ""))
+    documents.append(entry.get("context", ''))
 
 retriever.add_documents(documents)
 
 @app.route('/chat', methods=['POST'])
 def chat():
     try:    
-        user_message = request.json.get('message', '')
-        translate
-        print(f"user: {user_message}")
+        user_message_vi = request.json.get('message', '')
+        user_message_en = translator.translate(user_message_vi, src='vi', dest='en').text
+        print(f"user: {user_message_en}")
 
-        relevant_docs = retriever.search(user_message)
+        relevant_docs = retriever.search(user_message_en)
         context = "\n".join(relevant_docs)
         print(f"[Relevant docs]: {relevant_docs}")
 
-        answer = generator.generate_answer(user_message, context)
-        translate
-        print(f"[Generated answer]: {answer}")
+        answer_en = generator.generate_answer(user_message_en, context)
+        answer_vi = translator.translate(answer_en, src='en', dest='vi').text
+        print(f"[Generated answer]: {answer_vi}")
 
         return jsonify({
-            "reply": answer,
+            "reply": answer_vi,
             "context": relevant_docs  
         })
     
