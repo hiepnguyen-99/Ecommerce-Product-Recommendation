@@ -4,14 +4,16 @@ from model.retriever import Retriever
 from model.generator import Generator
 import json
 import traceback
-from googletrans import Translator
+from transformers import pipeline
 
 app = Flask(__name__)
 CORS(app)
 
 retriever = Retriever()
 generator = Generator()
-translator = Translator()
+
+vi2en = pipeline("translation_vi_to_en", model="Helsinki-NLP/opus-mt-vi-en")
+en2vi = pipeline("translation_en_to_vi", model="Helsinki-NLP/opus-mt-en-vi")
 
 # load data
 with open('data/val.json', 'r', encoding='utf-8') as f:
@@ -27,7 +29,7 @@ retriever.add_documents(documents)
 def chat():
     try:    
         user_message_vi = request.json.get('message', '')
-        user_message_en = translator.translate(user_message_vi, src='vi', dest='en').text
+        user_message_en = vi2en(user_message_vi)[0]['translation_text']
         print(f"user: {user_message_en}")
 
         relevant_docs = retriever.search(user_message_en)
@@ -35,11 +37,12 @@ def chat():
         print(f"[Relevant docs]: {relevant_docs}")
 
         answer_en = generator.generate_answer(user_message_en, context)
-        answer_vi = translator.translate(answer_en, src='en', dest='vi').text
-        print(f"[Generated answer]: {answer_vi}")
+        print(f"[Generated answer]: {answer_en}")
+        # answer_vi = en2vi(answer_en)[0]['translation_text']
+        # print(f"[Generated answer]: {answer_vi}")
 
         return jsonify({
-            "reply": answer_vi,
+            "reply": answer_en,
             "context": relevant_docs  
         })
     
