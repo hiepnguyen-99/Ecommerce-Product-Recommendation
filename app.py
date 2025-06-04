@@ -1,10 +1,11 @@
+import json
+import traceback
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from model.retriever import Retriever
 from model.generator import Generator
-import json
-import traceback
 from transformers import pipeline
+from datasets import load_dataset
 
 app = Flask(__name__)
 CORS(app)
@@ -16,12 +17,12 @@ vi2en = pipeline("translation_vi_to_en", model="Helsinki-NLP/opus-mt-vi-en")
 en2vi = pipeline("translation_en_to_vi", model="Helsinki-NLP/opus-mt-en-vi")
 
 # load data
-with open('data/val.json', 'r', encoding='utf-8') as f:
-    datas = json.load(f)
+datas = load_dataset('hiepnguyenn-99/amazon-qa', data_files='data.json', split='all')
 # tạo documents cho retriever
-documents = []
-for entry in datas:
-    documents.append(entry.get("context", ''))
+documents = [
+    f"question: {entry['question']}, related answer: {entry['answer']}"
+    for entry in datas
+]
 
 retriever.add_documents(documents)
 
@@ -38,12 +39,11 @@ def chat():
 
         answer_en = generator.generate_answer(user_message_en, context)
         print(f"[Generated answer]: {answer_en}")
-        # answer_vi = en2vi(answer_en)[0]['translation_text']
-        # print(f"[Generated answer]: {answer_vi}")
+        answer_vi = en2vi(answer_en)[0]['translation_text']
+        print(f"[Generated answer]: {answer_vi}")
 
         return jsonify({
-            "reply": answer_en,
-            "context": relevant_docs  
+            "reply": answer_vi
         })
     
     except Exception as e:
