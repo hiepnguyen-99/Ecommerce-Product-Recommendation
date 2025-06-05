@@ -21,7 +21,7 @@ en2vi = pipeline("translation_en_to_vi", model="Helsinki-NLP/opus-mt-en-vi")
 datas = load_dataset('hiepnguyenn-99/amazon-qa', data_files='reduced_data.json', split='all')
 # tạo documents cho retriever
 documents = [
-    f"{entry['question']}? answer: {entry['answer']}"
+    f"{entry['question']}? {entry['answer']}"
     for entry in datas
 ]
 
