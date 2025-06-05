@@ -42,4 +42,4 @@ app.py
 ![Test](./test.png)
 
 ## Note
-The project utilizes a reduced dataset `reduce_data.json`, which is 90% smaller than original dataset `data.json`. As a result, the RAG model may occasionally generate answers that are not present in dataset.
+The project utilizes a reduced dataset `reduce_data.json`, which is 90% smaller than original dataset `data.json` due to hardware limitations. As a result, the RAG model may occasionally generate answers that are not present in dataset.
