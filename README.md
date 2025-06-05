@@ -1,30 +1,39 @@
-A modern HTML project utilizing CSS for building responsive web applications with minimal setup.
+## Introduction
+This project has been built a chatbot for E-commerce (EcommerceBot) to support customers and enhance experience
 
-## 🚀 Features
+## Dataset
+Amazon question/answer data by Julian McAuley
+https://cseweb.ucsd.edu/~jmcauley/datasets/amazon/qa/
 
-- **HTML5** - Modern HTML structure with best practices
-- **CSS** – A stylesheet language used to style HTML elements for building and customizing web interfaces.
-- **NPM Scripts** - Easy-to-use commands for development and building
-- **Responsive Design** - Mobile-first approach for all screen sizes
+## Features
 
-## 📁 Project Structure
+- **HTML** - Frontend
+- **Python** - Backend: build a RAG structual
+
+    - **Retriever**: used sentence-transformers/all-MiniLM-L6-v2 pretrained model to tokenize and embedding data, then find the related documents
+
+    - **Generator**: used SRDdev/QABERT-small with input is question + context, output is answer
+
+## Project Structure
 
 ```
-html_app/
-├── pages/              # Additional HTML pages
-├── index.html          # Main HTML entry point
-└── assets/             # Images, fonts, and other static assets
-
+Ecommerce-QA/
+├── assets/             # Images
+├── data/          
+├── model/              # RAG
+├── pages/              # Include index.html 
+└── app.py             
 ```
 
-## 🎨 Styling
+## User Guide
 
-This project uses  CSS for styling.
-
-## 🙏 Acknowledgments
-
-- Built with [Rocket.new
-](https: //rocket.new)
-- Powered by HTML and CSS
-
-Built with ❤️ on Rocket.new
+1. Clone repository to local
+2. Install the required libraries:
+```bash
+pip install -r requirements.txt
+```
+3. Run 
+```bash
+app.py
+```
+4. Access host: http://127.0.0.1:5500/pages/ChatInterface.html
